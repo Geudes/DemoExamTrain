@@ -1,0 +1,446 @@
+{
+  "info": {
+    "name": "HomeRent API",
+    "description": "Коллекция для тестирования REST API сервиса аренды жилья HomeRent.\n\nПеред использованием:\n1. Запустите сервер: npm start (порт 3020)\n2. Выполните npm run seed для тестовых данных\n3. Выполните Login — токены сохранятся в переменные коллекции",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3020"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register (Tenant)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newtenant@mail.ru\",\n  \"password\": \"Pass1234\",\n  \"name\": \"НовыйАрендатор\",\n  \"role\": \"tenant\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/register"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "  pm.collectionVariables.set('refreshToken', json.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register (Owner)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newowner@mail.ru\",\n  \"password\": \"Pass1234\",\n  \"name\": \"НовыйВладелец\",\n  \"role\": \"owner\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/register"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "  pm.collectionVariables.set('refreshToken', json.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login (Tenant)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"tenant@mail.ru\",\n  \"password\": \"Tenant123\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "  pm.collectionVariables.set('refreshToken', json.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login (Owner)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@mail.ru\",\n  \"password\": \"Owner123\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "  pm.collectionVariables.set('refreshToken', json.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/refresh"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "  if (json.refreshToken) {",
+                  "    pm.collectionVariables.set('refreshToken', json.refreshToken);",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/logout"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  pm.collectionVariables.set('accessToken', '');",
+                  "  pm.collectionVariables.set('refreshToken', '');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Me",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/profile/me"
+          }
+        },
+        {
+          "name": "Update Me (Tenant)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"АннаАрендатор\",\n  \"email\": \"tenant@mail.ru\"\n}"
+            },
+            "url": "{{baseUrl}}/profile/me"
+          }
+        },
+        {
+          "name": "Update Me (Owner)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"ИванВладелец\",\n  \"email\": \"owner@mail.ru\",\n  \"phone\": \"+7 (999) 111-22-33\",\n  \"description\": \"Сдаю уютное жильё в центре города\",\n  \"avatar\": \"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200\"\n}"
+            },
+            "url": "{{baseUrl}}/profile/me"
+          }
+        },
+        {
+          "name": "Delete Account",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/profile/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Apartments",
+      "item": [
+        {
+          "name": "List (Catalog)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/apartments?city=Москва&sortBy=price&sortOrder=asc&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["apartments"],
+              "query": [
+                { "key": "city", "value": "Москва" },
+                { "key": "type", "value": "apartment", "disabled": true },
+                { "key": "rooms", "value": "2", "disabled": true },
+                { "key": "priceMin", "value": "1000", "disabled": true },
+                { "key": "priceMax", "value": "10000", "disabled": true },
+                { "key": "sortBy", "value": "price" },
+                { "key": "sortOrder", "value": "asc" },
+                { "key": "limit", "value": "20" },
+                { "key": "offset", "value": "0", "disabled": true },
+                { "key": "search", "value": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List (Owner Mine)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/apartments?mine=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["apartments"],
+              "query": [
+                { "key": "mine", "value": "true" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get By Id",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/apartments/1"
+          }
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Новая квартира\",\n  \"type\": \"apartment\",\n  \"city\": \"Москва\",\n  \"address\": \"ул. Примерная, 10\",\n  \"description\": \"Уютная квартира в тихом районе\",\n  \"shortDescription\": \"Квартира в тихом районе\",\n  \"pricePerNight\": 5500,\n  \"rooms\": 2,\n  \"maxGuests\": 4,\n  \"amenities\": [\"Wi-Fi\", \"Кухня\", \"Парковка\"],\n  \"photos\": [\"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800\"],\n  \"published\": true\n}"
+            },
+            "url": "{{baseUrl}}/apartments"
+          }
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Обновлённая квартира\",\n  \"pricePerNight\": 6000,\n  \"published\": true\n}"
+            },
+            "url": "{{baseUrl}}/apartments/1"
+          }
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/apartments/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "List (Tenant)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/bookings?search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings"],
+              "query": [
+                { "key": "search", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List (Owner)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/bookings?search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings"],
+              "query": [
+                { "key": "search", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"apartmentId\": 1,\n  \"checkIn\": \"2026-08-01\",\n  \"checkOut\": \"2026-08-05\",\n  \"guests\": 2,\n  \"comment\": \"Приедем вечером, нужна парковка\"\n}"
+            },
+            "url": "{{baseUrl}}/bookings"
+          }
+        },
+        {
+          "name": "Confirm (Owner)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\"\n}"
+            },
+            "url": "{{baseUrl}}/bookings/1"
+          }
+        },
+        {
+          "name": "Reject (Owner)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"rejected\"\n}"
+            },
+            "url": "{{baseUrl}}/bookings/1"
+          }
+        },
+        {
+          "name": "Cancel (Tenant)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"cancelled\"\n}"
+            },
+            "url": "{{baseUrl}}/bookings/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/health"
+          }
+        }
+      ]
+    }
+  ]
+}
