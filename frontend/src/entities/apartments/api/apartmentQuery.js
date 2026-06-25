@@ -1,5 +1,7 @@
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axiosInstance from "../../../shared/lib/axiosInstance"
+import { useToasts } from "../../../widgets/toasts/context/ToastContext"
+import { getErrorText } from "../../../shared/utils/getErrorText"
 
 export const useApartments = (offset, filters = {}) => {
     return useQuery({
@@ -30,6 +32,22 @@ export const useCities = () => {
             return [...new Set(items.map(a => a.city))]
         }),
         staleTime: 1000*60*60
+    })
+}
+
+export const useDeleteApartments = () => {
+    const { showToast } = useToasts()
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: (id) => axiosInstance.delete('/apartments/' + id),
+        onSuccess: () => {
+            showToast('Удалени прошло успешно')
+            queryClient.invalidateQueries({ queryKey: ['apartments'] })
+        },
+        onError: (error) => {
+            showToast(getErrorText(error), 'error')
+        }
     })
 }
 

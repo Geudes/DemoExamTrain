@@ -24,7 +24,7 @@ async function seed() {
       userId: owner.id,
       phone: '+7 (999) 111-22-33',
       description: 'Сдаю уютное жильё в центре города уже 5 лет.',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200',
+      avatar: 'https://images.newscientist.com/wp-content/uploads/2025/10/22103513/SEI_270442304.jpg',
     });
 
     const tenant = await User.create({
@@ -48,8 +48,8 @@ async function seed() {
         maxGuests: 4,
         amenities: ['Wi-Fi', 'Кухня', 'Стиральная машина', 'Кондиционер'],
         photos: [
-          'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800',
-          'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800',
+          'https://images.newscientist.com/wp-content/uploads/2025/10/22103513/SEI_270442304.jpg',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTo0mWP_wHuSdDpMVD_rmfD9CDljsqa5IdH_J5u1x3mWNuk-k-6SF6QV4-s&s=10',
         ],
         published: true,
         rating: 4.8,
@@ -67,7 +67,7 @@ async function seed() {
         maxGuests: 2,
         amenities: ['Wi-Fi', 'Кухня', 'Телевизор'],
         photos: [
-          'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800',
+          'https://images.newscientist.com/wp-content/uploads/2025/10/22103513/SEI_270442304.jpg',
         ],
         published: true,
         rating: 4.5,
@@ -85,7 +85,7 @@ async function seed() {
         maxGuests: 8,
         amenities: ['Wi-Fi', 'Парковка', 'Камин', 'Барбекю', 'Сад'],
         photos: [
-          'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800',
+          'https://images.newscientist.com/wp-content/uploads/2025/10/22103513/SEI_270442304.jpg',
         ],
         published: true,
         rating: 4.9,
@@ -103,7 +103,7 @@ async function seed() {
         maxGuests: 1,
         amenities: ['Wi-Fi', 'Общая кухня'],
         photos: [
-          'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800',
+          'https://images.newscientist.com/wp-content/uploads/2025/10/22103513/SEI_270442304.jpg',
         ],
         published: true,
         rating: 4.2,
