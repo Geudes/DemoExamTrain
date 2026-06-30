@@ -1,0 +1,255 @@
+{
+  "info": {
+    "name": "MediBook API",
+    "description": "Коллекция для тестирования REST API системы бронирования визитов к врачу MediBook.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3030" },
+    { "key": "accessToken", "value": "" },
+    { "key": "refreshToken", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register (Patient)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newpatient@mail.ru\",\n  \"password\": \"Pass1234\",\n  \"name\": \"НовыйПациент\",\n  \"role\": \"patient\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/register"
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 201) { const json = pm.response.json(); pm.collectionVariables.set('accessToken', json.accessToken); pm.collectionVariables.set('refreshToken', json.refreshToken); }"], "type": "text/javascript" } }]
+        },
+        {
+          "name": "Register (Doctor)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newdoctor@mail.ru\",\n  \"password\": \"Pass1234\",\n  \"name\": \"НовыйВрач\",\n  \"role\": \"doctor\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/register"
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 201) { const json = pm.response.json(); pm.collectionVariables.set('accessToken', json.accessToken); pm.collectionVariables.set('refreshToken', json.refreshToken); }"], "type": "text/javascript" } }]
+        },
+        {
+          "name": "Login (Patient)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"patient@mail.ru\",\n  \"password\": \"Patient123\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 200) { const json = pm.response.json(); pm.collectionVariables.set('accessToken', json.accessToken); pm.collectionVariables.set('refreshToken', json.refreshToken); }"], "type": "text/javascript" } }]
+        },
+        {
+          "name": "Login (Doctor)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"doctor@mail.ru\",\n  \"password\": \"Doctor123\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 200) { const json = pm.response.json(); pm.collectionVariables.set('accessToken', json.accessToken); pm.collectionVariables.set('refreshToken', json.refreshToken); }"], "type": "text/javascript" } }]
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}" },
+            "url": "{{baseUrl}}/auth/refresh"
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 200) { const json = pm.response.json(); pm.collectionVariables.set('accessToken', json.accessToken); if (json.refreshToken) pm.collectionVariables.set('refreshToken', json.refreshToken); }"], "type": "text/javascript" } }]
+        },
+        {
+          "name": "Logout",
+          "request": { "method": "POST", "url": "{{baseUrl}}/auth/logout" },
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 200) { pm.collectionVariables.set('accessToken', ''); pm.collectionVariables.set('refreshToken', ''); }"], "type": "text/javascript" } }]
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        { "name": "Get Me", "request": { "method": "GET", "url": "{{baseUrl}}/profile/me" } },
+        {
+          "name": "Update Me (Patient)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"АннаСидорова\",\n  \"email\": \"patient@mail.ru\"\n}" },
+            "url": "{{baseUrl}}/profile/me"
+          }
+        },
+        {
+          "name": "Update Me (Doctor)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"ИванПетров\",\n  \"email\": \"doctor@mail.ru\",\n  \"about\": \"Врач-терапевт с 12-летним стажем\",\n  \"price\": 2500,\n  \"rating\": 4.9,\n  \"contacts\": \"+7 (999) 123-45-67\",\n  \"photo\": \"https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400\",\n  \"visitFormats\": [\"in_person\", \"online\"]\n}"
+            },
+            "url": "{{baseUrl}}/profile/me"
+          }
+        },
+        { "name": "Delete Account", "request": { "method": "DELETE", "url": "{{baseUrl}}/profile/1" } }
+      ]
+    },
+    {
+      "name": "Doctors",
+      "item": [
+        {
+          "name": "List (Catalog)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/doctors?specializationId=1&sortBy=price&sortOrder=asc&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["doctors"],
+              "query": [
+                { "key": "specializationId", "value": "1" },
+                { "key": "visitFormats", "value": "in_person,online", "disabled": true },
+                { "key": "ratingMin", "value": "4", "disabled": true },
+                { "key": "priceMin", "value": "1000", "disabled": true },
+                { "key": "priceMax", "value": "5000", "disabled": true },
+                { "key": "sortBy", "value": "price" },
+                { "key": "sortOrder", "value": "asc" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        { "name": "Get By Id", "request": { "auth": { "type": "noauth" }, "method": "GET", "url": "{{baseUrl}}/doctors/1" } }
+      ]
+    },
+    {
+      "name": "Appointments",
+      "item": [
+        {
+          "name": "List (Patient)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/appointments?search=", "host": ["{{baseUrl}}"], "path": ["appointments"], "query": [{ "key": "search", "value": "" }] }
+          }
+        },
+        {
+          "name": "List (Doctor)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/appointments?search=", "host": ["{{baseUrl}}"], "path": ["appointments"], "query": [{ "key": "search", "value": "" }] }
+          }
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"doctorId\": 1,\n  \"date\": \"2026-08-01\",\n  \"time\": \"11:00\",\n  \"format\": \"in_person\",\n  \"comment\": \"Плановый осмотр\"\n}"
+            },
+            "url": "{{baseUrl}}/appointments"
+          }
+        },
+        {
+          "name": "Confirm (Doctor)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"confirmed\"\n}" },
+            "url": "{{baseUrl}}/appointments/1"
+          }
+        },
+        {
+          "name": "Reject (Doctor)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"rejected\"\n}" },
+            "url": "{{baseUrl}}/appointments/1"
+          }
+        },
+        {
+          "name": "Cancel (Patient)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"cancelled\"\n}" },
+            "url": "{{baseUrl}}/appointments/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Specializations",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/specializations?search=", "host": ["{{baseUrl}}"], "path": ["specializations"], "query": [{ "key": "search", "value": "" }] }
+          }
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Офтальмолог\"\n}" },
+            "url": "{{baseUrl}}/specializations"
+          }
+        },
+        {
+          "name": "Select",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"specializationIds\": [1, 2]\n}" },
+            "url": "{{baseUrl}}/specializations/selected"
+          }
+        },
+        {
+          "name": "Remove Selected",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"specializationIds\": [2]\n}" },
+            "url": "{{baseUrl}}/specializations/selected"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        { "name": "Health Check", "request": { "auth": { "type": "noauth" }, "method": "GET", "url": "{{baseUrl}}/health" } }
+      ]
+    }
+  ]
+}
