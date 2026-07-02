@@ -1,0 +1,1 @@
+export const getErrorText = (error) => error?.response?.data?.error || error?.message || 'Unknown error'
